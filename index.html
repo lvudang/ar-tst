@@ -1,29 +1,48 @@
-<head>
-  <meta charset="UTF-8" />
-  <title>WebAR Fullscreen Video – Test</title>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>AR.js Demo</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ar.js@3.4.0/aframe/build/aframe-ar.js"></script>
+    <style>
+      body { margin: 0; overflow: hidden; }
+      #videoPlayer {
+        display: none;
+        width: 100%;
+        height: 100%;
+        background: black;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- AR Szene -->
+    <a-scene embedded arjs>
+      <!-- Marker: hier deine Buchseite -->
+      <a-marker type="pattern" url="buchseite-marker.patt">
+        <a-entity id="trigger"></a-entity>
+      </a-marker>
+      <a-entity camera></a-entity>
+    </a-scene>
 
-  <!-- A-Frame -->
-  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <!-- Videoplayer -->
+    <video id="videoPlayer" src="video.mp4" controls></video>
 
-  <!-- AR.js NFT (funktioniert garantiert, offizieller Build) -->
-  <script src="https://rawcdn.githack.com/AR-js-org/AR.js/3.3.2/aframe/build/aframe-ar-nft.js"></script>
+    <script>
+      const trigger = document.querySelector("#trigger");
+      const video = document.getElementById("videoPlayer");
 
-  <style>
-    body, html {
-      margin: 0;
-      overflow: hidden;
-      background: black;
-    }
-    video {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      object-fit: cover;
-      z-index: 9999;
-      background: black;
-    }
-  </style>
-</head>
+      // Event: Marker erkannt
+      trigger.addEventListener("markerFound", () => {
+        video.style.display = "block";
+        video.requestFullscreen();
+        video.play();
+      });
+
+      // Event: Marker verloren (optional)
+      trigger.addEventListener("markerLost", () => {
+        video.pause();
+        video.style.display = "none";
+      });
+    </script>
+  </body>
+</html>
