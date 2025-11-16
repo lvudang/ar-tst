@@ -2,9 +2,8 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <title>WebAR Fullscreen Video – Stay Playing</title>
+  <title>WebAR Fullscreen Video – Test</title>
 
-  <!-- AR.js NFT Image Tracking -->
   <script src="https://cdn.jsdelivr.net/npm/ar.js@3.3.2/aframe/build/aframe-ar.js"></script>
 
   <style>
@@ -13,7 +12,6 @@
       overflow: hidden;
       background: black;
     }
-
     video {
       display: none;
       position: fixed;
@@ -30,17 +28,16 @@
 
 <body>
 
-  <!-- Fullscreen Video -->
   <video id="videoFS">
     <source src="video.mp4" type="video/mp4">
+    Dein Browser unterstützt kein Video-Tag.
   </video>
 
-  <!-- AR Scene -->
   <a-scene
     embedded
     renderer="logarithmicDepthBuffer: true;"
     vr-mode-ui="enabled: false"
-    arjs="trackingMethod: best; sourceType: camera; debugUIEnabled: false;"
+    arjs="trackingMethod: best; sourceType: camera; debugUIEnabled: true;"
   >
     <a-nft
       type="nft"
@@ -53,45 +50,31 @@
     </a-nft>
   </a-scene>
 
-
   <script>
     const video = document.getElementById('videoFS');
-    let hasPlayed = false; // verhindert mehrfaches Auslösen
+    let hasPlayed = false;
 
     async function playFullscreen() {
       try {
-
-        // Fullscreen aktivieren
         if (video.requestFullscreen) {
           await video.requestFullscreen();
         } else if (video.webkitRequestFullscreen) {
           await video.webkitRequestFullscreen();
         }
-
-        // Video anzeigen und starten
         video.style.display = "block";
         video.play();
-
       } catch (e) {
         console.log("Fullscreen Fehler:", e);
       }
     }
 
     const marker = document.querySelector("a-nft");
-
-    // Nur beim ersten Erkennen starten
     marker.addEventListener("markerFound", () => {
       if (!hasPlayed) {
         hasPlayed = true;
         playFullscreen();
       }
     });
-
-    // ❗ MarkerLost wird ignoriert → Video läuft weiter
-    marker.addEventListener("markerLost", () => {
-      console.log("Marker verloren – Video läuft weiter");
-    });
   </script>
-
 </body>
 </html>
